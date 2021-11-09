@@ -21,11 +21,6 @@ const (
     Complete
 )
 
-var alls = make([]Task,0)
-var todos = make([]Task,0)
-var progresses = make([]Task,0)
-var completes = make([]Task,0)
-
 var nextId = 0
 
 func NewTask(name string, status Status) (*Task, error) {
@@ -52,30 +47,16 @@ func (t *Task) ModifyStatus(status Status) {
     }
 }
 
-func (t *Task) DeleteTask() {
-    switch t.status {
-    case Todo:
-	for i, v := range todos {
-	    if v.id == t.id {
-		removeElement(&todos, i)
-		removeElement(&alls, i)
-	    }
-	}
-    case Progress:
-	for i, v := range progresses {
-	    if v.id == t.id {
-		removeElement(&progresses, i)
-		removeElement(&alls, i)
-	    }
-	}
-    case Complete:
-	for i, v := range completes {
-	    if v.id == t.id {
-		removeElement(&completes, i)
-		removeElement(&alls, i)
-	    }
-	}
-    }
+func (t *Task) GetId() int {
+    return t.id
+}
+
+func (t *Task) GetStatus() Status {
+    return t.status
+}
+
+func (t *Task) Equal(another *Task) bool {
+    return t.id == another.id
 }
 
 func setNextId(t []Task) {
@@ -85,38 +66,4 @@ func setNextId(t []Task) {
 func getNextId() int {
     nextId++ 
     return nextId
-}
-
-func removeElement(slice *[]Task, index int) {
-    (*slice)[index] = (*slice)[len((*slice))-1]
-    (*slice) = (*slice)[:len((*slice))-1]
-}
-
-func InitTasks() {
-    // [todo] from store file
-    for i := 1; i <= 5; i++ {
-	t, _  := NewTask("aaa", Todo)
-	todos = append(todos, *t)
-    }
-    for i := 6; i <= 10; i++ {
-	t, _ := NewTask("bbb", Progress)
-	progresses = append(progresses, *t)
-    }
-    for i := 11; i <= 15; i++ {
-	t, _ := NewTask("ccc", Complete)
-	completes = append(completes, *t)
-    }
-    for _, v := range todos {
-	alls = append(alls, v)
-    }
-    for _, v := range progresses {
-	alls = append(alls, v)
-    }
-    for _, v := range completes {
-	alls = append(alls, v)
-    }
-    //fmt.Println(todos)
-    //fmt.Println(progresses)
-    //fmt.Println(completes)
-    //fmt.Println(alls)
 }

@@ -34,16 +34,3 @@ func TestModifyName(t *testing.T) {
 
 func TestModifyStatsu(t *testing.T) {
 }
-
-func TestDeleteTask(t *testing.T) {
-    InitTasks()
-
-    fmt.Println(alls)
-    fmt.Println(todos)
-
-    task := Task{5, "aaa", Todo, ""}
-    task.DeleteTask()
-
-    fmt.Println(alls)
-    fmt.Println(todos)
-}
