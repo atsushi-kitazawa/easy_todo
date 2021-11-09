@@ -1,7 +1,9 @@
 package entity
 
 import (
-	"fmt"
+	"errors"
+	_ "fmt"
+	"time"
 )
 
 type Task struct {
@@ -19,39 +21,102 @@ const (
     Complete
 )
 
-type todos []Task
-type progresses []Task
-type completes []Task
+var alls = make([]Task,0)
+var todos = make([]Task,0)
+var progresses = make([]Task,0)
+var completes = make([]Task,0)
 
 var nextId = 0
 
-func NewTask(name string, status Status, completeDate string) *Task {
-    return &Task{id: getNextId(), name: name, status: status, completeDate: completeDate}
+func NewTask(name string, status Status) (*Task, error) {
+    if len(name) == 0 {
+	return nil, errors.New("Please specify name with at least one character")	
+    }
+
+    return &Task{id: getNextId(), name: name, status: status, completeDate: ""}, nil
+}
+
+func (t *Task) ModifyName(name string) {
+    if len(name) == 0 {
+	return
+    }
+
+    t.name = name
+}
+
+func (t *Task) ModifyStatus(status Status) {
+    t.status = status
+
+    if status == Complete {
+	t.completeDate = time.Now().String()
+    }
+}
+
+func (t *Task) DeleteTask() {
+    switch t.status {
+    case Todo:
+	for i, v := range todos {
+	    if v.id == t.id {
+		removeElement(&todos, i)
+		removeElement(&alls, i)
+	    }
+	}
+    case Progress:
+	for i, v := range progresses {
+	    if v.id == t.id {
+		removeElement(&progresses, i)
+		removeElement(&alls, i)
+	    }
+	}
+    case Complete:
+	for i, v := range completes {
+	    if v.id == t.id {
+		removeElement(&completes, i)
+		removeElement(&alls, i)
+	    }
+	}
+    }
+}
+
+func setNextId(t []Task) {
+    nextId = len(t)
+}
+
+func getNextId() int {
+    nextId++ 
+    return nextId
+}
+
+func removeElement(slice *[]Task, index int) {
+    (*slice)[index] = (*slice)[len((*slice))-1]
+    (*slice) = (*slice)[:len((*slice))-1]
 }
 
 func InitTasks() {
     // [todo] from store file
-    todoTasks := make(todos, 10)
     for i := 1; i <= 5; i++ {
-	todoTasks = append(todoTasks, *NewTask("aaa", Todo, ""))
+	t, _  := NewTask("aaa", Todo)
+	todos = append(todos, *t)
     }
-    progressTasks := make(progresses, 10)
     for i := 6; i <= 10; i++ {
-	progressTasks = append(progressTasks, *NewTask("bbb", Progress, ""))
+	t, _ := NewTask("bbb", Progress)
+	progresses = append(progresses, *t)
     }
-    completeTasks := make(completes, 10)
     for i := 11; i <= 15; i++ {
-	completeTasks = append(completeTasks, *NewTask("ccc", Complete, ""))
+	t, _ := NewTask("ccc", Complete)
+	completes = append(completes, *t)
     }
-
-    fmt.Println(todoTasks)
-    fmt.Println(progressTasks)
-    fmt.Println(completeTasks)
-}
-
-func setNextId() {}
-
-func getNextId() int {
-    nextId++
-    return nextId
+    for _, v := range todos {
+	alls = append(alls, v)
+    }
+    for _, v := range progresses {
+	alls = append(alls, v)
+    }
+    for _, v := range completes {
+	alls = append(alls, v)
+    }
+    //fmt.Println(todos)
+    //fmt.Println(progresses)
+    //fmt.Println(completes)
+    //fmt.Println(alls)
 }
