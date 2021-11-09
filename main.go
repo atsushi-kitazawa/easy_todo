@@ -9,6 +9,8 @@ import (
 func main() {
     fmt.Println("easy todo")
 
-    task := entity.NewTask(1, "aaa", entity.Progress, "2021-11-09")
-    fmt.Println(task)
+    //task := entity.NewTask("aaa", entity.Progress, "2021-11-09")
+    //fmt.Println(task)
+
+    entity.InitTasks()
 }
