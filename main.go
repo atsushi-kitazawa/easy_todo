@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/atsushi-kitazawa/easy_todo/entity"
+	"github.com/atsushi-kitazawa/easy_todo/domain"
 )
 
 func main() {
@@ -12,5 +12,5 @@ func main() {
     //task := entity.NewTask("aaa", "2021-11-09")
     //fmt.Println(task)
 
-    entity.InitTasks()
+    domain.InitTasks()
 }
